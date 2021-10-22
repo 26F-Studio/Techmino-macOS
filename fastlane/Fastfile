@@ -43,7 +43,7 @@ platform :mac do
   lane :make_safe do
     notarize(
       package: "Techmino.app",
-      print_log: false,
+      print_log: true,
       api_key: get_api_key()
     )
   end
