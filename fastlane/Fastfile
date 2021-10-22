@@ -40,7 +40,7 @@ platform :mac do
 
   lane :notarize do
     notarize(
-      package: "Techmino.app"
+      package: "Techmino.app",
       api_key: get_api_key()
     )
   end
