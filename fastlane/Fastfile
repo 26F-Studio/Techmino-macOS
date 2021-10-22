@@ -28,7 +28,6 @@ platform :mac do
     )
 
     match(
-      type: "appstore",
       git_basic_authorization: Base64.strict_encode64(GIT_AUTHORIZATION),
       readonly: true,
       skip_provisioning_profiles: true,
@@ -42,7 +41,6 @@ platform :mac do
     notarize(
       package: "Techmino.app",
       print_log: true,
-      verbose: true,
       api_key: get_api_key()
     )
   end
