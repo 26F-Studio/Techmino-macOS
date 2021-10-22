@@ -18,7 +18,7 @@ def get_api_key()
 end
 
 platform :mac do
-  lane :match do
+  lane :get_cert do
     create_keychain(
       name: TEMP_KEYCHAIN_USER,
       password: TEMP_KEYCHAIN_PASSWORD,
@@ -38,7 +38,7 @@ platform :mac do
     )
   end
 
-  lane :notarize do
+  lane :make_safe do
     notarize(
       package: "Techmino.app",
       api_key: get_api_key()
