@@ -28,7 +28,7 @@ platform :mac do
   lane :sign do
     api_key = init_credentials()
     cert(
-      api_key: api_key
+      api_key: api_key,
       keychain_password: TEMP_KEYCHAIN_PASSWORD
     )
   end
