@@ -1,5 +1,6 @@
 default_platform(:mac)
 
+DEVELOPER_APP_IDENTIFIER = ENV["DEVELOPER_APP_IDENTIFIER"]
 GIT_AUTHORIZATION = ENV["GIT_AUTHORIZATION"]
 TEMP_KEYCHAIN_USER = ENV["TEMP_KEYCHAIN_USER"]
 TEMP_KEYCHAIN_PASSWORD = ENV["TEMP_KEYCHAIN_PASSWORD"]
@@ -28,6 +29,8 @@ platform :mac do
     )
 
     match(
+      type: "developer_id",
+      app_identifier: "#{DEVELOPER_APP_IDENTIFIER}",
       git_basic_authorization: Base64.strict_encode64(GIT_AUTHORIZATION),
       readonly: true,
       skip_provisioning_profiles: true,
