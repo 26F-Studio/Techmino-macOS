@@ -1,5 +1,6 @@
 default_platform(:mac)
 
+GIT_AUTHORIZATION = ENV["GIT_AUTHORIZATION"]
 TEMP_KEYCHAIN_USER = ENV["TEMP_KEYCHAIN_USER"]
 TEMP_KEYCHAIN_PASSWORD = ENV["TEMP_KEYCHAIN_PASSWORD"]
 APPLE_ISSUER_ID = ENV["APPLE_ISSUER_ID"]
@@ -18,8 +19,8 @@ def init_credentials()
   return app_store_connect_api_key(
     key_id: APPLE_KEY_ID,
     issuer_id: APPLE_ISSUER_ID,
-    key_content: APPLE_KEY_CONTENT,            
-    duration: 1200,            
+    key_content: APPLE_KEY_CONTENT,
+    duration: 1200,
     in_house: false
   )
 end
@@ -27,9 +28,14 @@ end
 platform :mac do
   lane :sign do
     api_key = init_credentials()
-    cert(
-      api_key: api_key,
-      keychain_password: TEMP_KEYCHAIN_PASSWORD
+    match(
+      type: "appstore",
+      git_basic_authorization: Base64.strict_encode64(GIT_AUTHORIZATION),
+      readonly: true,
+      skip_provisioning_profiles: true,
+      keychain_name: TEMP_KEYCHAIN_USER,
+      keychain_password: TEMP_KEYCHAIN_PASSWORD,
+      api_key: api_key
     )
   end
 end
