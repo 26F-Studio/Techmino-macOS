@@ -42,7 +42,7 @@ platform :mac do
 
   lane :make_safe do
     notarize(
-      package: "Techmino.app",
+      package: "Techmino-macOS.dmg",
       print_log: true,
       api_key: get_api_key()
     )
