@@ -43,7 +43,8 @@ platform :mac do
   lane :make_safe do
     notarize(
       package: "Techmino-macOS.dmg",
-      bundle_id: "org.love2d.*",
+      bundle_id: "org.love2d.dummy",
+      use_notarytool: true,
       print_log: true,
       api_key: get_api_key()
     )
