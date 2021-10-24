@@ -44,6 +44,7 @@ platform :mac do
   lane :make_safe do
     notarize(
       package: NOTARIZE_OBJECT,
+      bundle_id: APP_IDENTIFIER,
       print_log: true,
       api_key: get_api_key()
     )
