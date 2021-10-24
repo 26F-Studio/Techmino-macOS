@@ -7,6 +7,8 @@ TEMP_KEYCHAIN_PASSWORD = ENV["TEMP_KEYCHAIN_PASSWORD"]
 APPLE_ISSUER_ID = ENV["APPLE_ISSUER_ID"]
 APPLE_KEY_ID = ENV["APPLE_KEY_ID"]
 APPLE_KEY_CONTENT = ENV["APPLE_KEY_CONTENT"]
+NOTARIZE_OBJECT = ENV["NOTARIZE_OBJECT"]
+BUNDLE_ID = ENV["BUNDLE_ID"]
 
 def get_api_key()
   return app_store_connect_api_key(
@@ -42,7 +44,8 @@ platform :mac do
 
   lane :make_safe do
     notarize(
-      package: "Techmino.app",
+      package: NOTARIZE_OBJECT,
+      bundle_id: BUNDLE_ID,
       print_log: true,
       api_key: get_api_key()
     )
