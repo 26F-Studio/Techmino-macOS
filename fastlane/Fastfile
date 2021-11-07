@@ -46,6 +46,7 @@ platform :mac do
       package: NOTARIZE_OBJECT,
       bundle_id: APP_IDENTIFIER,
       print_log: true,
+      verbose: true,
       api_key: get_api_key()
     )
   end
