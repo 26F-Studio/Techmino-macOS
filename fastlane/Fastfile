@@ -34,6 +34,19 @@ def fastlane_match(profile_type, api_key)
   )
 end
 
+def fastlane_match_additional(cert_type, api_key)
+  match(
+    additional_cert_types: cert_type,
+    app_identifier: "#{APP_IDENTIFIER}",
+    git_basic_authorization: Base64.strict_encode64(MATCH_TOKEN),
+    readonly: true,
+    skip_provisioning_profiles: true,
+    keychain_name: KEYCHAIN_NAME,
+    keychain_password: KEYCHAIN_PWD,
+    api_key: api_key
+  )
+end
+
 def pilot_package(package_name)
   begin
     pilot(
@@ -98,6 +111,7 @@ platform :mac do
     )
 
     fastlane_match("developer_id", get_api_key())
+    fastlane_match_additional("developer_id_installer", get_api_key())
   end
 
   lane :make_safe do
@@ -111,17 +125,17 @@ platform :mac do
   end
 
   lane :dev do
-    fastlane_match("developer_id", get_api_key())
+    fastlane_match_additional("developer_id_installer", get_api_key())
     pilot_package(NOTARIZE_OBJECT)
   end
 
   lane :test do
-    fastlane_match("developer_id", get_api_key())
+    fastlane_match_additional("developer_id_installer", get_api_key())
     distribute_package(NOTARIZE_OBJECT)
   end
 
   lane :release do
-    fastlane_match("developer_id", get_api_key())
+    fastlane_match_additional("developer_id_installer", get_api_key())
     deliver_package(NOTARIZE_OBJECT)
   end
 end
