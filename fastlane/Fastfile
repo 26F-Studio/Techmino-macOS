@@ -42,7 +42,7 @@ def pilot_package(package_name)
       changelog: "#{APP_CHANGELOG}",
       skip_waiting_for_build_processing: true,
       groups: "Dev",
-      ipa: package_name
+      pkg: package_name
     )
   rescue StandardError => e
     UI.important(e.message + ' ⚠️')
@@ -58,7 +58,7 @@ def distribute_package(package_name)
       changelog: "#{APP_CHANGELOG}",
       distribute_external: true,
       groups: ["Dev", "Test"],
-      ipa: package_name
+      pkg: package_name
     )
   rescue StandardError => e
     UI.important(e.message + ' ⚠️')
@@ -76,7 +76,7 @@ def deliver_package(package_name)
       submit_for_review: true,
       reject_if_possible: true,
       automatic_release: true,
-      ipa: package_name,
+      pkg: package_name,
       submission_information: {
         add_id_info_uses_idfa: false
       }
