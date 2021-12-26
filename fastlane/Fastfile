@@ -3,6 +3,8 @@ default_platform(:mac)
 API_ID = ENV["API_ID"]
 API_ISSUER = ENV["API_ISSUER"]
 API_KEY = ENV["API_KEY"]
+APP_CHANGELOG = ENV["APP_CHANGELOG"]
+APP_ID = ENV["APP_ID"]
 APP_IDENTIFIER = ENV["APP_IDENTIFIER"]
 KEYCHAIN_NAME = ENV["KEYCHAIN_NAME"]
 KEYCHAIN_PWD = ENV["KEYCHAIN_PWD"]
@@ -19,6 +21,72 @@ def get_api_key()
   )
 end
 
+def fastlane_match(profile_type, api_key)
+  match(
+    type: profile_type,
+    app_identifier: "#{APP_IDENTIFIER}",
+    git_basic_authorization: Base64.strict_encode64(MATCH_TOKEN),
+    readonly: true,
+    skip_provisioning_profiles: true,
+    keychain_name: KEYCHAIN_NAME,
+    keychain_password: KEYCHAIN_PWD,
+    api_key: api_key
+  )
+end
+
+def pilot_package(package_name)
+  begin
+    pilot(
+      apple_id: "#{APP_ID}",
+      app_identifier: "#{APP_IDENTIFIER}",
+      changelog: "#{APP_CHANGELOG}",
+      skip_waiting_for_build_processing: true,
+      groups: "Dev",
+      ipa: package_name
+    )
+  rescue StandardError => e
+    UI.important(e.message + ' ⚠️')
+    notityDiscord('Develop', 'Upload to Test Flight internal test failed', e.message, 13632027)
+  end
+end
+
+def distribute_package(package_name)
+  begin
+    pilot(
+      apple_id: "#{APP_ID}",
+      app_identifier: "#{APP_IDENTIFIER}",
+      changelog: "#{APP_CHANGELOG}",
+      distribute_external: true,
+      groups: ["Dev", "Test"],
+      ipa: package_name
+    )
+  rescue StandardError => e
+    UI.important(e.message + ' ⚠️')
+    notityDiscord('Test', 'Upload to Test Flight external test failed', e.message, 13632027)
+  end
+end
+
+def deliver_package(package_name)
+  begin
+    deliver(
+      app_identifier: "#{APP_IDENTIFIER}",
+      force: true,
+      precheck_include_in_app_purchases: false,
+      skip_screenshots: true,
+      submit_for_review: true,
+      reject_if_possible: true,
+      automatic_release: true,
+      ipa: package_name,
+      submission_information: {
+        add_id_info_uses_idfa: false
+      }
+    )
+  rescue StandardError => e
+    UI.important(e.message + ' ⚠️')
+    notityDiscord('Release', 'Upload to App Store failed', e.message, 13632027)
+  end
+end
+
 platform :mac do
   lane :get_cert do
     create_keychain(
@@ -29,16 +97,7 @@ platform :mac do
       timeout: 0
     )
 
-    match(
-      type: "developer_id",
-      app_identifier: "#{APP_IDENTIFIER}",
-      git_basic_authorization: Base64.strict_encode64(MATCH_TOKEN),
-      readonly: true,
-      skip_provisioning_profiles: true,
-      keychain_name: KEYCHAIN_NAME,
-      keychain_password: KEYCHAIN_PWD,
-      api_key: get_api_key()
-    )
+    fastlane_match("developer_id", get_api_key())
   end
 
   lane :make_safe do
@@ -49,5 +108,20 @@ platform :mac do
       verbose: true,
       api_key: get_api_key()
     )
+  end
+
+  lane :dev do
+    fastlane_match("developer_id", get_api_key())
+    pilot_package(NOTARIZE_OBJECT)
+  end
+
+  lane :test do
+    fastlane_match("developer_id", get_api_key())
+    distribute_package(NOTARIZE_OBJECT)
+  end
+
+  lane :release do
+    fastlane_match("developer_id", get_api_key())
+    deliver_package(NOTARIZE_OBJECT)
   end
 end
