@@ -2,7 +2,9 @@ git_url("https://github.com/26F-Studio/Techmino-fastlane")
 
 storage_mode("git")
 
-app_identifier(["org.26f-studio.techmino.dev", "org.26f-studio.techmino.release"])
+type("appstore")
+
+app_identifier("org.26f-studio.techmino")
 
 username("1046101471@qq.com")
 

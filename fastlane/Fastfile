@@ -1,3 +1,5 @@
+require 'discordrb/webhooks'
+
 default_platform(:mac)
 
 API_ID = ENV["API_ID"]
@@ -45,6 +47,33 @@ def fastlane_match_additional(cert_type, api_key)
     keychain_password: KEYCHAIN_PWD,
     api_key: api_key
   )
+end
+
+def notityDiscord(
+  buildType,
+  title,
+  description,
+  color
+)
+  puts "Try sending Discord message..."
+  client = Discordrb::Webhooks::Client.new(url: DISCORD_WEBHOOK)
+  client.execute do |builder|
+    builder.add_embed do |embed|
+      embed.title = title
+      embed.description = "```#{description}```"
+      embed.url = "https://github.com/26F-Studio/Techmino/actions/runs/#{ACTION_ID}"
+      embed.color = color
+      embed.timestamp = Time.now
+      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: "Github Actions", icon_url: "https://avatars.githubusercontent.com/u/44036562?s=200&v=4")
+      embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://blog.frankel.ch/assets/resources/github-actions-maven-releases/git-hub-actions.svg")
+      embed.author = Discordrb::Webhooks::EmbedAuthor.new(name: "Techmino **#{buildType}** CI Notification 🔔", icon_url: "https://raw.githubusercontent.com/26F-Studio/Techmino/main/.github/build/Windows/icon.ico")
+      embed.fields = [
+        {name: "Changelog", value: APP_CHANGELOG},
+        {name: "Version", value: APP_VERSION[1..]},
+        {name: "Build number", value: APP_BUILD}
+      ]
+    end
+  end
 end
 
 def pilot_package(package_name)
