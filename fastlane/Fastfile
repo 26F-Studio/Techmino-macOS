@@ -139,8 +139,9 @@ platform :mac do
       timeout: 0
     )
 
-    fastlane_match("developer_id", get_api_key())
+    # fastlane_match("developer_id", get_api_key())
     fastlane_match_additional("developer_id_installer", get_api_key())
+    fastlane_match_additional("mac_installer_distribution", get_api_key())
   end
 
   lane :make_safe do
@@ -154,17 +155,17 @@ platform :mac do
   end
 
   lane :dev do
-    fastlane_match_additional("developer_id_installer", get_api_key())
+    fastlane_match_additional("mac_installer_distribution", get_api_key())
     pilot_package(NOTARIZE_OBJECT)
   end
 
   lane :test do
-    fastlane_match_additional("developer_id_installer", get_api_key())
+    fastlane_match_additional("mac_installer_distribution", get_api_key())
     distribute_package(NOTARIZE_OBJECT)
   end
 
   lane :release do
-    fastlane_match_additional("developer_id_installer", get_api_key())
+    fastlane_match_additional("mac_installer_distribution", get_api_key())
     deliver_package(NOTARIZE_OBJECT)
   end
 end
