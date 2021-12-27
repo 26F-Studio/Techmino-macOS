@@ -105,7 +105,7 @@ platform :mac do
     create_keychain(
       name: KEYCHAIN_NAME,
       password: KEYCHAIN_PWD,
-      unlock: false,
+      unlock: true,
       default_keychain: true,
       timeout: 0
     )
