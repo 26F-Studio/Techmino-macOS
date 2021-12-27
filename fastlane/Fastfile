@@ -139,7 +139,7 @@ platform :mac do
       timeout: 0
     )
 
-    # fastlane_match("developer_id", get_api_key())
+    fastlane_match("developer_id", get_api_key())
     fastlane_match_additional("developer_id_installer", get_api_key())
     fastlane_match_additional("mac_installer_distribution", get_api_key())
   end
